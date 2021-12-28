@@ -195,7 +195,7 @@ public class SignInMenu {
 				}
 			}
 		});
-		
+	
 	}
 	/**
 	 * This method is to validate if the JFields are empty.

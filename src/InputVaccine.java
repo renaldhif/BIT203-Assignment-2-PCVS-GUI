@@ -6,6 +6,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.Font;
+import java.awt.Toolkit;
+
 import javax.swing.SwingConstants;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
@@ -55,6 +57,7 @@ public class InputVaccine {
 	 */
 	private void initialize() {
 		inputVaccineFrame = new JFrame();
+		inputVaccineFrame.setIconImage(Toolkit.getDefaultToolkit().getImage("img/pcvslogo.png"));
 		inputVaccineFrame.setTitle("PCVS System");
 		inputVaccineFrame.setBounds(100, 100, 800, 600);
 		inputVaccineFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -270,23 +273,35 @@ public class InputVaccine {
 					if (vacIDCmbBox.getSelectedIndex() == 0) {
 						errMsgVIDCBox.setVisible(true);
 					}
-					if (intDayInputted <= 0 || intDayInputted >= 31) {
-						errMsgDay.setVisible(true);
-						dayTField.setText("");
-					}
-					if (intMonthInputted <= 0 || intMonthInputted >= 13) {
-						errMsgMonth.setVisible(true);
-						monthTField.setText("");
-					}
-					if (intYearInputted <= 2020 || intYearInputted >= 2100) {
-						errMsgYear.setVisible(true);
-						yearTField.setText("");
-					}
-					if (intBatchInputted <= 0) {
+					else if (intBatchInputted <= 0) {
 						errMsgBatch.setVisible(true);
 						inputBatchTField.setText("");
+						errMsgVIDCBox.setVisible(false);
 					}
-					if (intQtyInputted <= 0) {
+					else if (intDayInputted <= 0 || intDayInputted >= 31) {
+						errMsgBatch.setVisible(false);
+						errMsgDay.setVisible(true);
+						dayTField.setText("");
+						errMsgVIDCBox.setVisible(false);
+					}
+					else if (intMonthInputted <= 0 || intMonthInputted >= 13) {
+						errMsgDay.setVisible(false);
+						errMsgMonth.setVisible(true);
+						monthTField.setText("");
+						errMsgVIDCBox.setVisible(false);
+					}
+					else if (intYearInputted <= 2020 || intYearInputted >= 2100) {
+						errMsgDay.setVisible(false);
+						errMsgMonth.setVisible(false);
+						errMsgYear.setVisible(true);
+						yearTField.setText("");
+						errMsgVIDCBox.setVisible(false);
+					}
+					
+					else if (intQtyInputted <= 0) {
+						errMsgDay.setVisible(false);
+						errMsgMonth.setVisible(false);
+						errMsgYear.setVisible(false);
 						errMsgQty.setVisible(true);
 						inputQtyTField.setText("");
 					}
@@ -317,7 +332,7 @@ public class InputVaccine {
 		registerBtn.setBounds(420, 488, 327, 43);
 		layeredPane.add(registerBtn);
 		
-		JLabel backLbl = new JLabel("New label");
+		JLabel backLbl = new JLabel("");
 		backLbl.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -326,7 +341,7 @@ public class InputVaccine {
 				inputVaccineFrame.dispose();
 			}
 		});
-		backLbl.setIcon(new ImageIcon("C:\\Users\\renal\\OneDrive\\COLLEGE\\ASSIGNMENTS\\5th Semester\\BIT203 - JAVA ADVANCED\\eclipse-Assignment2\\img\\backBtn.png"));
+		backLbl.setIcon(new ImageIcon("img/backBtn.png"));
 		layeredPane.setLayer(backLbl, 1);
 		backLbl.setBounds(10, 10, 50, 50);
 		layeredPane.add(backLbl);

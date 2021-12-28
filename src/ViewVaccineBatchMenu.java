@@ -1,4 +1,5 @@
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
@@ -39,6 +40,7 @@ public class ViewVaccineBatchMenu {
 	 */
 	private void initialize() {
 		viewVaccineBatchFrame = new JFrame();
+		viewVaccineBatchFrame.setIconImage(Toolkit.getDefaultToolkit().getImage("img/pcvslogo.png"));
 		viewVaccineBatchFrame.setTitle("PCVS System");
 		viewVaccineBatchFrame.setBounds(100, 100, 800, 600);
 		viewVaccineBatchFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -49,12 +51,12 @@ public class ViewVaccineBatchMenu {
 		viewVaccineBatchFrame.getContentPane().add(layeredPane);
 		
 		JLabel viewVacPicLbl = new JLabel("");
-		viewVacPicLbl.setIcon(new ImageIcon("C:\\Users\\renal\\OneDrive\\COLLEGE\\ASSIGNMENTS\\5th Semester\\BIT203 - JAVA ADVANCED\\eclipse-Assignment2\\img\\batches.png"));
+		viewVacPicLbl.setIcon(new ImageIcon("img/batches.png"));
 		viewVacPicLbl.setBounds(0, 0, 360, 560);
 		layeredPane.add(viewVacPicLbl);
 		
 		JLabel whiteBgLbl = new JLabel("");
-		whiteBgLbl.setIcon(new ImageIcon("C:\\Users\\renal\\OneDrive\\COLLEGE\\ASSIGNMENTS\\5th Semester\\BIT203 - JAVA ADVANCED\\eclipse-Assignment2\\img\\bgWhite.png"));
+		whiteBgLbl.setIcon(new ImageIcon("img/bgWhite.png"));
 		whiteBgLbl.setBounds(360, 0, 424, 560);
 		layeredPane.add(whiteBgLbl);
 		
@@ -67,7 +69,7 @@ public class ViewVaccineBatchMenu {
 				viewVaccineBatchFrame.dispose();
 			}
 		});
-		backLbl.setIcon(new ImageIcon("C:\\Users\\renal\\OneDrive\\COLLEGE\\ASSIGNMENTS\\5th Semester\\BIT203 - JAVA ADVANCED\\eclipse-Assignment2\\img\\backBtn.png"));
+		backLbl.setIcon(new ImageIcon("img/backBtn.png"));
 		layeredPane.setLayer(backLbl, 1);
 		backLbl.setBounds(10, 10, 50, 50);
 		layeredPane.add(backLbl);

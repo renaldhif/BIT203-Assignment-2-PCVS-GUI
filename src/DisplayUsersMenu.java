@@ -1,4 +1,5 @@
 import java.awt.EventQueue;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
@@ -39,6 +40,7 @@ public class DisplayUsersMenu {
 	 */
 	private void initialize() {
 		displayUsersFrame = new JFrame();
+		displayUsersFrame.setIconImage(Toolkit.getDefaultToolkit().getImage("img/pcvslogo.png"));
 		displayUsersFrame.setTitle("PCVS System");
 		displayUsersFrame.setBounds(100, 100, 800, 600);
 		displayUsersFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -49,12 +51,12 @@ public class DisplayUsersMenu {
 		displayUsersFrame.getContentPane().add(layeredPane);
 		
 		JLabel dispUsersPicLbl = new JLabel("");
-		dispUsersPicLbl.setIcon(new ImageIcon("C:\\Users\\renal\\OneDrive\\COLLEGE\\ASSIGNMENTS\\5th Semester\\BIT203 - JAVA ADVANCED\\eclipse-Assignment2\\img\\allUsers.png"));
+		dispUsersPicLbl.setIcon(new ImageIcon("img/allUsers.png"));
 		dispUsersPicLbl.setBounds(0, 0, 360, 561);
 		layeredPane.add(dispUsersPicLbl);
 		
 		JLabel bgWhiteLbl = new JLabel("");
-		bgWhiteLbl.setIcon(new ImageIcon("C:\\Users\\renal\\OneDrive\\COLLEGE\\ASSIGNMENTS\\5th Semester\\BIT203 - JAVA ADVANCED\\eclipse-Assignment2\\img\\bgWhite.png"));
+		bgWhiteLbl.setIcon(new ImageIcon("img/bgWhite.png"));
 		bgWhiteLbl.setBounds(360, 0, 424, 561);
 		layeredPane.add(bgWhiteLbl);
 		
@@ -67,7 +69,7 @@ public class DisplayUsersMenu {
 				displayUsersFrame.dispose();
 			}
 		});
-		backLbl.setIcon(new ImageIcon("C:\\Users\\renal\\OneDrive\\COLLEGE\\ASSIGNMENTS\\5th Semester\\BIT203 - JAVA ADVANCED\\eclipse-Assignment2\\img\\backBtn.png"));
+		backLbl.setIcon(new ImageIcon("img/backBtn.png"));
 		layeredPane.setLayer(backLbl, 1);
 		backLbl.setBounds(10, 10, 50, 50);
 		layeredPane.add(backLbl);

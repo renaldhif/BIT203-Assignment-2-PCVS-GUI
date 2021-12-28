@@ -37,10 +37,11 @@ public class PCVSGUI {
 	private JPasswordField passwordTField;
 	private JTextField fullNameTField;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-	private JButton ptnRdBtn, hcRdBtn;
 	private JTextField icpTField;
 	private JTextField emailTField;
-
+	private JComboBox hcCmbBox;
+	private JLabel errMsgSelectHC;
+	private JRadioButton hcAdminRdBtn, ptnRdBtn;
 	/**
 	 * Launch the application.
 	 */
@@ -277,18 +278,24 @@ public class PCVSGUI {
 				else if (hcAdminRdBtn.isSelected() == false && ptnRdBtn.isSelected() == false) {
 					JOptionPane.showMessageDialog(null, "Please select roles!");
 				}
-				else if (hcCmbBox.getSelectedIndex() == 0 ) {
+				else if (hcAdminRdBtn.isSelected() && hcCmbBox.getSelectedIndex() == 0 ) {
 					errMsgSelectHC.setVisible(true);
 				}
 				else if (hcAdminRdBtn.isSelected() == true) {
 					JOptionPane.showMessageDialog(null, "Administrator successfully registered!");
-					errMsgSelectHC.setVisible(false);
+					PCVSGUI pcvsGUI = new PCVSGUI();
+					pcvsGUI.mainMenuFrame.setVisible(true);
+					mainMenuFrame.dispose();
 				}
 				else if (ptnRdBtn.isSelected() == true && icpTField.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(null, "ICPassport cannot be blank!");
+					errMsgSelectHC.setVisible(false);
 				}
 				else{
 					JOptionPane.showMessageDialog(null, "Patient Successfully registered!");
+					PCVSGUI pcvsGUI = new PCVSGUI();
+					pcvsGUI.mainMenuFrame.setVisible(true);
+					mainMenuFrame.dispose();
 				}
 			}
 		});
@@ -325,11 +332,11 @@ public class PCVSGUI {
 	 * @return true if the Fields are empty, otherwise it returns false if the Fields are not empty
 	 */
 	public boolean isFieldMainMenuEmpty() {
-
 		if (usernameTField.getText().isEmpty() || passwordTField.getPassword().length == 0 
 				|| fullNameTField.getText().isEmpty() || emailTField.getText().isEmpty()) {
 			return true;
 		}
 		return false;
 	}
+	
 }

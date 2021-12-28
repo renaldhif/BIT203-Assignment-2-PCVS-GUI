@@ -2,9 +2,12 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import java.awt.Font;
+import java.awt.Toolkit;
+
 import javax.swing.SwingConstants;
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
@@ -44,6 +47,7 @@ public class AdminMenu {
 	 */
 	private void initialize() {
 		adminMenuFrame = new JFrame();
+		adminMenuFrame.setIconImage(Toolkit.getDefaultToolkit().getImage("img/pcvslogo.png"));
 		adminMenuFrame.setTitle("PCVS System");
 		adminMenuFrame.setBounds(100, 100, 800, 600);
 		adminMenuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -105,6 +109,22 @@ public class AdminMenu {
 		layeredPane.add(dispUsersBtn);
 		
 		JButton signOutBtn = new JButton("Sign Out");
+		signOutBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int result = JOptionPane.showConfirmDialog(
+						   adminMenuFrame,
+						   "Are you sure want to Sign Out?", 
+						   "Sign Out",
+			               JOptionPane.YES_NO_OPTION,
+			               JOptionPane.QUESTION_MESSAGE);
+		            if(result == JOptionPane.YES_OPTION){
+		            	SignInMenu signInMenu = new SignInMenu();
+		            	signInMenu.signInMenuFrame.setVisible(true);
+		            	adminMenuFrame.dispose();
+		            }
+			}
+		});
 		signOutBtn.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
 		signOutBtn.setBackground(new Color(237,94,104));
 		signOutBtn.setBounds(440, 450, 300, 46);
@@ -119,6 +139,6 @@ public class AdminMenu {
 		whiteBgLbl.setIcon(new ImageIcon("img/bgWhite.png"));
 		whiteBgLbl.setBounds(360, 0, 430, 560);
 		layeredPane.add(whiteBgLbl);
-		
+	
 	}
 }
