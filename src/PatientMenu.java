@@ -64,12 +64,28 @@ public class PatientMenu {
 		layeredPane.add(greetingLbl);
 		
 		JButton reqVacBtn = new JButton("Request vaccination appointment");
+		reqVacBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				RequestVaccinationMenu requestVaccination = new RequestVaccinationMenu();
+				requestVaccination.requestVaccinationFrame.setVisible(true);
+				patientMenuFrame.dispose();
+			}
+		});
 		reqVacBtn.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
 		reqVacBtn.setBounds(440, 175, 300, 46);
 		layeredPane.add(reqVacBtn);
 		
 		JButton viewVacAptBtn = new JButton("View vaccination appointment status");
-		viewVacAptBtn.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
+		viewVacAptBtn.setFont(new Font("Dialog", Font.BOLD, 14));
+		viewVacAptBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				ViewVaccinationMenu viewVaccinationMenu = new ViewVaccinationMenu();
+				viewVaccinationMenu.viewVaccinationFrame.setVisible(true);
+				patientMenuFrame.dispose();
+			}
+		});
 		viewVacAptBtn.setBounds(440, 275, 300, 46);
 		layeredPane.add(viewVacAptBtn);
 		

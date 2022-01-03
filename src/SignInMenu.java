@@ -23,10 +23,12 @@ import java.awt.event.ActionEvent;
 public class SignInMenu {
 
 	JFrame signInMenuFrame;
+	private PCVS pcvsObj;
 	private JTextField usernameTField;
 	private JPasswordField passwordTField;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-
+	String username, password;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -49,7 +51,12 @@ public class SignInMenu {
 	public SignInMenu() {
 		initialize();
 	}
-
+	
+	// copy constructor PCVS from PCVSGUI class to this class
+	public void setPCVSObjClone(PCVS newPCVS) {
+		pcvsObj = newPCVS;
+	}
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -170,6 +177,8 @@ public class SignInMenu {
 				signInBtn.setBackground(new Color(65, 105, 225));
 			}
 			public void mouseClicked(MouseEvent e) {
+				username = usernameTField.getText();
+				password = String.valueOf(passwordTField.getPassword());
 				// if patient, show patient menu
 				if (isFieldSignInEmpty() == true) {
 					JOptionPane.showMessageDialog(null, "Field cannot be blank!");
@@ -181,8 +190,23 @@ public class SignInMenu {
 					// If user selects the Healthcare Administrator Radiobutton, 
 					// then show the AdminMenu Frame
 					if(hcAdminRdBtn.isSelected()) {
-						AdminMenu adminMenu = new AdminMenu();
-						adminMenu.adminMenuFrame.setVisible(true);
+						//debug
+						JOptionPane.showMessageDialog(null, pcvsObj.getAdminList());
+						JOptionPane.showMessageDialog(null, pcvsObj.getAdminInHC(username));
+						JOptionPane.showMessageDialog(null, username + " - " + password);
+						
+						
+						if(pcvsObj.validatesLoginForAdmin(username, password) == -1) {
+							JOptionPane.showMessageDialog(null, "No Account Matched! Wrong username or password");
+							SignInMenu signInMenu = new SignInMenu();
+							signInMenu.signInMenuFrame.setVisible(true);
+							signInMenuFrame.dispose();
+						}
+						else {
+							AdminMenu adminMenu = new AdminMenu();
+							adminMenu.adminMenuFrame.setVisible(true);
+						}
+						
 					}
 					// Else if user selects the Patient Radiobutton, 
 					// then show the PatientMenu Frame

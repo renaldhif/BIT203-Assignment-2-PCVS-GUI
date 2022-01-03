@@ -7,10 +7,19 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.JTable;
+import javax.swing.JList;
+import javax.swing.AbstractListModel;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.ListSelectionModel;
+import java.util.ArrayList;
 
 public class DisplayUsersMenu {
 
 	JFrame displayUsersFrame;
+	private JTable table;
+	PCVS pcvsObj = new PCVS();
+	ArrayList listAdminCl = (ArrayList)pcvsObj.getAdminList().clone();
 
 	/**
 	 * Launch the application.
@@ -73,5 +82,62 @@ public class DisplayUsersMenu {
 		layeredPane.setLayer(backLbl, 1);
 		backLbl.setBounds(10, 10, 50, 50);
 		layeredPane.add(backLbl);
+		
+		JLabel adminLbl = new JLabel("Administrator");
+		adminLbl.setBounds(370, 11, 115, 25);
+		layeredPane.add(adminLbl);
+		
+		table = new JTable();
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		// re:
+		DefaultTableModel dtm = new DefaultTableModel();
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"Full Name", "Username", "Email", "Staff ID", "Healthcare"},
+			},
+			new String[] {
+				"Full Name", "Username", "Email", "Staff ID", "Healthcare"
+			}
+		) {
+			Class[] columnTypes = new Class[] {
+				String.class, String.class, String.class, String.class, String.class
+			};
+			public Class getColumnClass(int columnIndex) {
+				return columnTypes[columnIndex];
+			}
+		});
+		table.getColumnModel().getColumn(0).setPreferredWidth(103);
+		table.getColumnModel().getColumn(4).setPreferredWidth(148);
+		
+		
+		for (int i = 0; i < listAdminCl.size(); i++) {
+			dtm.setRowCount(i+1);
+			Administrator dataAdmin = (Administrator) listAdminCl.get(i);
+			Object[] rowDataAdmin = 
+				{
+					dataAdmin.getFullName(),
+					dataAdmin.getUsername(),
+					dataAdmin.getEmail(),
+					dataAdmin.getStaffID(),
+					getAdminInHC()
+				};
+			dtm.addRow(rowDataAdmin);
+		}
+		layeredPane.setLayer(table, 1);
+		table.setBounds(370, 47, 401, 149);
+		layeredPane.add(table);
+	}
+	
+	public String getAdminInHC(){
+		String adminHC = "";
+		for (int i = 0; i < pcvsObj.getCentreList().size(); i++){
+            HealthcareCenter dataHC = pcvsObj.getCentreListByIndex(i);
+
+            for (int j = 0; j < dataHC.getAdminAgr().size(); j++){
+       	 		adminHC = dataHC.getCentreName();
+            }
+        }
+
+		return adminHC;
 	}
 }

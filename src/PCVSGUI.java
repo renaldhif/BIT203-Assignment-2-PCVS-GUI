@@ -31,7 +31,8 @@ import java.awt.event.MouseEvent;
 import java.awt.Toolkit;
 
 public class PCVSGUI {
-
+	
+	private PCVS pcvsObj;
 	JFrame mainMenuFrame;
 	private JTextField usernameTField;
 	private JPasswordField passwordTField;
@@ -42,6 +43,9 @@ public class PCVSGUI {
 	private JComboBox hcCmbBox;
 	private JLabel errMsgSelectHC;
 	private JRadioButton hcAdminRdBtn, ptnRdBtn;
+	
+	String username, password, email, fullName, staffID, passport;
+	int centreOption;
 	/**
 	 * Launch the application.
 	 */
@@ -64,11 +68,17 @@ public class PCVSGUI {
 	public PCVSGUI() {
 		initialize();
 	}
+	
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		//String username, password, email, fullName, staffID;
+		//int centreOption;
+		
+		pcvsObj = new PCVS();
+	
 		mainMenuFrame = new JFrame();
 		mainMenuFrame.setIconImage(Toolkit.getDefaultToolkit().getImage("img/pcvslogo.png"));
 		mainMenuFrame.setTitle("PCVS System");
@@ -221,17 +231,7 @@ public class PCVSGUI {
 		layeredPane.add(haveAccountLbl);
 
 		JLabel toSignInLbl = new JLabel("Sign in here.");
-		toSignInLbl.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				SignInMenu signInMenu = new SignInMenu();
-				// set visible to true to open the signInMenuFrame frame
-				signInMenu.signInMenuFrame.setVisible(true);
-				// dispose the current (SignUp) Frame.
-				mainMenuFrame.dispose();
-			}
-		});
-		toSignInLbl.setForeground(new Color(65, 105, 225));
+				toSignInLbl.setForeground(new Color(65, 105, 225));
 		toSignInLbl.setBackground(new Color(255, 255, 255));
 		layeredPane.setLayer(toSignInLbl, 1);
 		toSignInLbl.setVerticalAlignment(SwingConstants.BOTTOM);
@@ -271,7 +271,15 @@ public class PCVSGUI {
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
+				username = usernameTField.getText();
+				password = String.valueOf(passwordTField.getPassword());
+				
+				email = emailTField.getText();
+				fullName = fullNameTField.getText();
+				staffID = pcvsObj.generateStaffID();
+				centreOption = hcCmbBox.getSelectedIndex();
+				passport = icpTField.getText();
+				
 				if (isFieldMainMenuEmpty() == true) {
 					JOptionPane.showMessageDialog(null, "Field cannot be blank!");
 				}
@@ -282,10 +290,22 @@ public class PCVSGUI {
 					errMsgSelectHC.setVisible(true);
 				}
 				else if (hcAdminRdBtn.isSelected() == true) {
-					JOptionPane.showMessageDialog(null, "Administrator successfully registered!");
-					PCVSGUI pcvsGUI = new PCVSGUI();
-					pcvsGUI.mainMenuFrame.setVisible(true);
-					mainMenuFrame.dispose();
+					Administrator adminAgr = new Administrator(username,password,email,fullName,staffID);
+					// assign the array list of Healthcare Center into a variable
+                    HealthcareCenter selectHCAdmin = pcvsObj.getCentreListByIndex(centreOption-1);
+                    // assign admin to selected healthcare center
+                    selectHCAdmin.setAdminAgr(adminAgr);
+                    // add to arraylist
+                    pcvsObj.setAdminList(adminAgr);
+					JOptionPane.showMessageDialog(null, "Administrator with " + staffID 
+													  + " registered in " + pcvsObj.getCentreListByIndex(centreOption - 1) 
+													  + " has successfully registered");
+					//debug
+					JOptionPane.showMessageDialog(null, pcvsObj.getAdminList());
+					JOptionPane.showMessageDialog(null, pcvsObj.getAdminInHC(username));
+					//PCVSGUI pcvsGUI = new PCVSGUI();
+					//pcvsGUI.mainMenuFrame.setVisible(true);
+					//mainMenuFrame.dispose();
 				}
 				else if (ptnRdBtn.isSelected() == true && icpTField.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(null, "ICPassport cannot be blank!");
@@ -293,9 +313,12 @@ public class PCVSGUI {
 				}
 				else{
 					JOptionPane.showMessageDialog(null, "Patient Successfully registered!");
-					PCVSGUI pcvsGUI = new PCVSGUI();
-					pcvsGUI.mainMenuFrame.setVisible(true);
-					mainMenuFrame.dispose();
+					Patient patientAgr = new Patient(username,password, email, fullName, passport);
+                    pcvsObj.setPatientList(patientAgr);
+                    
+					//PCVSGUI pcvsGUI = new PCVSGUI();
+					//pcvsGUI.mainMenuFrame.setVisible(true);
+					//mainMenuFrame.dispose();
 				}
 			}
 		});
@@ -324,6 +347,21 @@ public class PCVSGUI {
 				}
 			}
 		});
+		
+		toSignInLbl.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				SignInMenu signInMenu = new SignInMenu();
+				// set a copy constructor PCVS for SignInMenu Class
+				signInMenu.setPCVSObjClone(pcvsObj); 
+			
+				// set visible to true to open the signInMenuFrame frame
+				signInMenu.signInMenuFrame.setVisible(true);
+				// dispose the current (SignUp) Frame.
+				mainMenuFrame.dispose();
+			}
+		});
+
 	}
 	
 	/**
