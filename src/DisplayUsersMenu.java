@@ -116,7 +116,14 @@ public class DisplayUsersMenu {
 		adminTable.setFont(new Font("Malgun Gothic", Font.PLAIN, 12));
 		layeredPane.setLayer(adminTable, 2);
 		// create DefaultTableModel
-		DefaultTableModel dtmAdmin = new DefaultTableModel(0, 0);		
+		DefaultTableModel dtmAdmin = new DefaultTableModel(0, 0) {
+			  @Override
+			  // method to set the cell is not editable
+			    public boolean isCellEditable(int row, int column) {
+			       //all cells false
+			       return false;
+			    }
+		};
 		// Column Header
 		String[] colHeaderAdmin = new String[] {"Username", "Full name", "Email", "Staff ID"};
 		dtmAdmin.setColumnIdentifiers(colHeaderAdmin);
@@ -136,6 +143,7 @@ public class DisplayUsersMenu {
 		adminTable.getColumnModel().getColumn(2).setPreferredWidth(150);
 		adminTable.getColumnModel().getColumn(3).setPreferredWidth(40);
 		
+		
 		JScrollPane scrollAdminTable = new JScrollPane();
 		layeredPane.setLayer(scrollAdminTable, 3);
 		scrollAdminTable.setViewportView(adminTable);
@@ -154,7 +162,14 @@ public class DisplayUsersMenu {
 		layeredPane.setLayer(patientTable, 2);
 		
 		// create DefaultTableModel
-		DefaultTableModel dtmPatient = new DefaultTableModel(0, 0);		
+		DefaultTableModel dtmPatient = new DefaultTableModel(0, 0) {
+			@Override
+			  // method to set the cell is not editable
+			    public boolean isCellEditable(int row, int column) {
+			       //all cells false
+			       return false;
+			    }
+		};		
 		// Column Header
 		String[] colHeaderPatient = new String[] {"Username", "Full name", "Email", "IC Passport"};
 		dtmPatient.setColumnIdentifiers(colHeaderPatient);

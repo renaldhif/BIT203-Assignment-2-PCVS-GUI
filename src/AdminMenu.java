@@ -108,6 +108,22 @@ public class AdminMenu {
 		viewVacBatchBtn.setBounds(440, 230, 300, 46);
 		layeredPane.add(viewVacBatchBtn);
 		
+		JButton confirmationBtn = new JButton("Confirm Vaccination Appointment");
+		confirmationBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				ConfirmVaccination confirmVaccination = new ConfirmVaccination(username, HCAdmin);
+				confirmVaccination.setPCVSObjClone(pcvsObj);
+				confirmVaccination.setUNameHCAdmin(username);
+				confirmVaccination.confirmVaccinationFrame.setVisible(true);
+				adminMenuFrame.dispose();
+			}
+		});
+		layeredPane.setLayer(confirmationBtn, 1);
+		confirmationBtn.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
+		confirmationBtn.setBounds(440, 310, 300, 46);
+		layeredPane.add(confirmationBtn);
+		
 		JButton dispUsersBtn = new JButton("Display All Users");
 		layeredPane.setLayer(dispUsersBtn, 1);
 		dispUsersBtn.addMouseListener(new MouseAdapter() {
@@ -159,11 +175,7 @@ public class AdminMenu {
 		whiteBgLbl.setBounds(360, 0, 430, 560);
 		layeredPane.add(whiteBgLbl);
 		
-		JButton confirmationBtn = new JButton("Confirm Vaccination Appointment");
-		layeredPane.setLayer(confirmationBtn, 1);
-		confirmationBtn.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
-		confirmationBtn.setBounds(440, 310, 300, 46);
-		layeredPane.add(confirmationBtn);
+		
 	
 	}
 }
