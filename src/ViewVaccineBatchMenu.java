@@ -7,34 +7,32 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.SwingConstants;
 
 public class ViewVaccineBatchMenu {
 
 	JFrame viewVaccineBatchFrame;
-
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					ViewVaccineBatchMenu window = new ViewVaccineBatchMenu();
-//					window.viewVaccineBatchFrame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
+	PCVS pcvsObj;
+	private String username;
+	private HealthcareCenter HCAdmin;
 
 	/**
 	 * Create the application.
 	 */
-	public ViewVaccineBatchMenu() {
+	public ViewVaccineBatchMenu(String hcAdminUsername, HealthcareCenter inHCAdmin){
+		username = hcAdminUsername;
+		HCAdmin = inHCAdmin;
 		initialize();
 	}
 
+	public void setPCVSObjClone(PCVS newPCVS) {
+		pcvsObj = newPCVS;
+	}
+
+	public void setUNameHCAdmin(String newUNameHCAdmin) {
+		username = newUNameHCAdmin;
+	}
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -50,10 +48,10 @@ public class ViewVaccineBatchMenu {
 		layeredPane.setBounds(0, 0, 800, 600);
 		viewVaccineBatchFrame.getContentPane().add(layeredPane);
 		
-		JLabel viewVacPicLbl = new JLabel("");
-		viewVacPicLbl.setIcon(new ImageIcon("img/batches.png"));
-		viewVacPicLbl.setBounds(0, 0, 360, 560);
-		layeredPane.add(viewVacPicLbl);
+		JLabel picLbl = new JLabel("");
+		picLbl.setIcon(new ImageIcon("img/batches.png"));
+		picLbl.setBounds(0, 0, 360, 560);
+		layeredPane.add(picLbl);
 		
 		JLabel whiteBgLbl = new JLabel("");
 		whiteBgLbl.setIcon(new ImageIcon("img/bgWhite.png"));
@@ -64,7 +62,9 @@ public class ViewVaccineBatchMenu {
 		backLbl.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				AdminMenu adminMenu = new AdminMenu();
+				AdminMenu adminMenu = new AdminMenu(username, pcvsObj.getAdminInHC(username));
+				adminMenu.setPCVSObjClone(pcvsObj);
+				adminMenu.setHCAdmin(pcvsObj.getAdminInHC(username));
 				adminMenu.adminMenuFrame.setVisible(true);
 				viewVaccineBatchFrame.dispose();
 			}
@@ -73,5 +73,12 @@ public class ViewVaccineBatchMenu {
 		layeredPane.setLayer(backLbl, 1);
 		backLbl.setBounds(10, 10, 50, 50);
 		layeredPane.add(backLbl);
+		
+		JLabel titleLbl = new JLabel("View Vaccine Batch Information");
+		titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
+		titleLbl.setBounds(462, 10, 279, 28);
+		layeredPane.add(titleLbl);
+		// show all batches
+		pcvsObj.showAllBatchesInformation();
 	}
 }

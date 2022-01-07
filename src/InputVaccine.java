@@ -21,8 +21,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class InputVaccine {
-
+	
 	JFrame inputVaccineFrame;
+	private PCVS pcvsObj;
+	private String username;
+	private HealthcareCenter HCAdmin;
+	private int qAdministered = 0;
+	
 	private JTextField inputBatchTField;
 	private JTextField dayTField;
 	private JTextField monthTField;
@@ -30,28 +35,21 @@ public class InputVaccine {
 	private JTextField inputQtyTField;
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					InputVaccine window = new InputVaccine();
-					window.inputVaccineFrame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the application.
 	 */
-	public InputVaccine() {
+	public InputVaccine(String hcAdminUsername, HealthcareCenter inHCAdmin) {
+		username = hcAdminUsername;
+		HCAdmin = inHCAdmin;
 		initialize();
 	}
+	
+	public void setPCVSObjClone(PCVS newPCVS) {
+		pcvsObj = newPCVS;
+	}
 
+	public void setUNameHCAdmin(String newUNameHCAdmin) {
+		username = newUNameHCAdmin;
+	}
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -227,6 +225,7 @@ public class InputVaccine {
 		inputQtyTField.setColumns(10);
 		inputQtyTField.setBounds(420, 428, 327, 35);
 		layeredPane.add(inputQtyTField);
+		
 		vacIDCmbBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String infoVacText = "";
@@ -306,8 +305,23 @@ public class InputVaccine {
 						inputQtyTField.setText("");
 					}
 					else {
+						String expiryDate = dayInputted + "/" + monthInputted + "/" + yearInputted;
+						String vBatch = batchInputted;
+						int qAvailable = intQtyInputted;
+						int vaccineIDNum = vacIDCmbBox.getSelectedIndex();
+						// set the batch
+						Batch batchAgr = new Batch(vBatch,expiryDate,qAvailable,qAdministered);
+						pcvsObj.setBatchToHC(HCAdmin,batchAgr);
+						pcvsObj.setBatchToVaccine(vaccineIDNum - 1, batchAgr);
+						
 						// if there's no missing input, then show pop up vaccine batch successfully registered
-						JOptionPane.showMessageDialog(null, "Vaccine Batch successfully registered!");
+						JOptionPane.showMessageDialog(null, 
+								"Vaccine ID V" + vaccineIDNum +
+								 ",batch " + vBatch + 
+								 ", with " + qAvailable + 
+								 " doses and expired at " + expiryDate
+								 );
+						
 						// then clear the text fields
 						dayTField.setText("");
 						monthTField.setText("");
@@ -325,7 +339,6 @@ public class InputVaccine {
 						errMsgQty.setVisible(false);
 					}
 				}
-				
 			}
 		});
 		layeredPane.setLayer(registerBtn, 1);
@@ -336,7 +349,9 @@ public class InputVaccine {
 		backLbl.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				AdminMenu adminMenu = new AdminMenu();
+				AdminMenu adminMenu = new AdminMenu(username, pcvsObj.getAdminInHC(username));
+				adminMenu.setPCVSObjClone(pcvsObj);
+				adminMenu.setHCAdmin(pcvsObj.getAdminInHC(username));
 				adminMenu.adminMenuFrame.setVisible(true);
 				inputVaccineFrame.dispose();
 			}

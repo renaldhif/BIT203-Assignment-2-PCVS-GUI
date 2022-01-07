@@ -1,5 +1,3 @@
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
@@ -16,32 +14,26 @@ import javax.swing.ImageIcon;
 import java.awt.Color;
 
 public class PatientMenu {
-
+	private PCVS pcvsObj;
+	private String username;
+	private String fullname;
 	JFrame patientMenuFrame;
-
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					PatientMenu window = new PatientMenu();
-//					window.patientMenuFrame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
 
 	/**
 	 * Create the application.
 	 */
-	public PatientMenu() {
+	public PatientMenu(String ptnUName) {
+		username = ptnUName;
 		initialize();
 	}
-
+	
+	public void setPCVSObjClone(PCVS newPCVS) {
+		pcvsObj = newPCVS;
+	}
+	
+	public void setPtnUName(String newPtnUName) {
+		username  = newPtnUName;
+	}
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -57,39 +49,43 @@ public class PatientMenu {
 		layeredPane.setBounds(0, 0, 800, 600);
 		patientMenuFrame.getContentPane().add(layeredPane);
 		
-		JLabel greetingLbl = new JLabel("Welcome Patient");
+		JLabel greetingLbl = new JLabel("Welcome Patient, " + username);
+		greetingLbl.setVerticalAlignment(SwingConstants.BOTTOM);
 		greetingLbl.setFont(new Font("Malgun Gothic", Font.BOLD, 18));
-		greetingLbl.setHorizontalAlignment(SwingConstants.CENTER);
-		greetingLbl.setBounds(495, 11, 174, 46);
+		greetingLbl.setHorizontalAlignment(SwingConstants.LEFT);
+		greetingLbl.setBounds(382, 39, 396, 25);
 		layeredPane.add(greetingLbl);
 		
 		JButton reqVacBtn = new JButton("Request vaccination appointment");
 		reqVacBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				RequestVaccinationMenu requestVaccination = new RequestVaccinationMenu();
+				RequestVaccinationMenu requestVaccination = new RequestVaccinationMenu(username);
+				requestVaccination.setPCVSObjClone(pcvsObj);
 				requestVaccination.requestVaccinationFrame.setVisible(true);
 				patientMenuFrame.dispose();
 			}
 		});
 		reqVacBtn.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
-		reqVacBtn.setBounds(440, 175, 300, 46);
+		reqVacBtn.setBounds(440, 115, 300, 46);
 		layeredPane.add(reqVacBtn);
 		
 		JButton viewVacAptBtn = new JButton("View vaccination appointment status");
-		viewVacAptBtn.setFont(new Font("Dialog", Font.BOLD, 14));
+		viewVacAptBtn.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
 		viewVacAptBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				ViewVaccinationMenu viewVaccinationMenu = new ViewVaccinationMenu();
+				ViewVaccinationMenu viewVaccinationMenu = new ViewVaccinationMenu(username);
+				viewVaccinationMenu.setPCVSObjClone(pcvsObj);
 				viewVaccinationMenu.viewVaccinationFrame.setVisible(true);
 				patientMenuFrame.dispose();
 			}
 		});
-		viewVacAptBtn.setBounds(440, 275, 300, 46);
+		viewVacAptBtn.setBounds(440, 235, 300, 46);
 		layeredPane.add(viewVacAptBtn);
 		
 		JButton signOutBtn = new JButton("Sign Out");
+		signOutBtn.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
 		signOutBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -101,6 +97,7 @@ public class PatientMenu {
 			               JOptionPane.QUESTION_MESSAGE);
 		            if(result == JOptionPane.YES_OPTION){
 		            	SignInMenu signInMenu = new SignInMenu();
+		            	signInMenu.setPCVSObjClone(pcvsObj);
 		            	signInMenu.signInMenuFrame.setVisible(true);
 		            	patientMenuFrame.dispose();
 		            }
@@ -108,7 +105,7 @@ public class PatientMenu {
 		});
 		signOutBtn.setBackground(new Color(237,94,104));
 		signOutBtn.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
-		signOutBtn.setBounds(440, 375, 300, 46);
+		signOutBtn.setBounds(440, 355, 300, 46);
 		layeredPane.add(signOutBtn);
 		
 		JLabel ptnPicLbl = new JLabel("");
@@ -120,7 +117,5 @@ public class PatientMenu {
 		bgWhiteLbl.setIcon(new ImageIcon("img/bgWhite.png"));
 		bgWhiteLbl.setBounds(361, 0, 429, 560);
 		layeredPane.add(bgWhiteLbl);
-	
-		
 	}
 }

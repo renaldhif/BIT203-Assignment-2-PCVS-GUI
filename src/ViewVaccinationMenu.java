@@ -10,30 +10,38 @@ import java.awt.event.MouseEvent;
 public class ViewVaccinationMenu {
 
 	JFrame viewVaccinationFrame;
+	private String username;
+	private PCVS pcvsObj;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ViewVaccinationMenu window = new ViewVaccinationMenu();
-					window.viewVaccinationFrame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					ViewVaccinationMenu window = new ViewVaccinationMenu();
+//					window.viewVaccinationFrame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the application.
 	 */
-	public ViewVaccinationMenu() {
+	public ViewVaccinationMenu(String ptnUName) {
+		username = ptnUName;
 		initialize();
 	}
-
+	public void setPtnUName(String newPtnUName) {
+		username  = newPtnUName;
+	}
+	public void setPCVSObjClone(PCVS newPCVS) {
+		pcvsObj = newPCVS;
+	}
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -61,7 +69,8 @@ public class ViewVaccinationMenu {
 		backLbl.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				PatientMenu patientMenu = new PatientMenu();
+				PatientMenu patientMenu = new PatientMenu(username);
+				patientMenu.setPCVSObjClone(pcvsObj);
 				patientMenu.patientMenuFrame.setVisible(true);
 				viewVaccinationFrame.dispose();
 			}

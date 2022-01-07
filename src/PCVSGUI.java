@@ -69,6 +69,10 @@ public class PCVSGUI {
 		initialize();
 	}
 	
+	public void setPCVSObjClone(PCVS newPCVS) {
+		pcvsObj = newPCVS;
+	}
+	
 
 	/**
 	 * Initialize the contents of the frame.
@@ -231,7 +235,7 @@ public class PCVSGUI {
 		layeredPane.add(haveAccountLbl);
 
 		JLabel toSignInLbl = new JLabel("Sign in here.");
-				toSignInLbl.setForeground(new Color(65, 105, 225));
+		toSignInLbl.setForeground(new Color(65, 105, 225));
 		toSignInLbl.setBackground(new Color(255, 255, 255));
 		layeredPane.setLayer(toSignInLbl, 1);
 		toSignInLbl.setVerticalAlignment(SwingConstants.BOTTOM);
@@ -280,45 +284,50 @@ public class PCVSGUI {
 				centreOption = hcCmbBox.getSelectedIndex();
 				passport = icpTField.getText();
 				
-				if (isFieldMainMenuEmpty() == true) {
-					JOptionPane.showMessageDialog(null, "Field cannot be blank!");
+				if (pcvsObj.validatesAvailUsername(username)) {
+					JOptionPane.showMessageDialog(null,
+						    "Username has been taken. Please try another one!.",
+						    "Username has been taken",
+						    JOptionPane.ERROR_MESSAGE);
 				}
-				else if (hcAdminRdBtn.isSelected() == false && ptnRdBtn.isSelected() == false) {
-					JOptionPane.showMessageDialog(null, "Please select roles!");
-				}
-				else if (hcAdminRdBtn.isSelected() && hcCmbBox.getSelectedIndex() == 0 ) {
-					errMsgSelectHC.setVisible(true);
-				}
-				else if (hcAdminRdBtn.isSelected() == true) {
-					Administrator adminAgr = new Administrator(username,password,email,fullName,staffID);
-					// assign the array list of Healthcare Center into a variable
-                    HealthcareCenter selectHCAdmin = pcvsObj.getCentreListByIndex(centreOption-1);
-                    // assign admin to selected healthcare center
-                    selectHCAdmin.setAdminAgr(adminAgr);
-                    // add to arraylist
-                    pcvsObj.setAdminList(adminAgr);
-					JOptionPane.showMessageDialog(null, "Administrator with " + staffID 
-													  + " registered in " + pcvsObj.getCentreListByIndex(centreOption - 1) 
-													  + " has successfully registered");
-					//debug
-					JOptionPane.showMessageDialog(null, pcvsObj.getAdminList());
-					JOptionPane.showMessageDialog(null, pcvsObj.getAdminInHC(username));
-					//PCVSGUI pcvsGUI = new PCVSGUI();
-					//pcvsGUI.mainMenuFrame.setVisible(true);
-					//mainMenuFrame.dispose();
-				}
-				else if (ptnRdBtn.isSelected() == true && icpTField.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(null, "ICPassport cannot be blank!");
-					errMsgSelectHC.setVisible(false);
-				}
-				else{
-					JOptionPane.showMessageDialog(null, "Patient Successfully registered!");
-					Patient patientAgr = new Patient(username,password, email, fullName, passport);
-                    pcvsObj.setPatientList(patientAgr);
-                    
-					//PCVSGUI pcvsGUI = new PCVSGUI();
-					//pcvsGUI.mainMenuFrame.setVisible(true);
-					//mainMenuFrame.dispose();
+				else {
+					if (isFieldMainMenuEmpty() == true) {
+						JOptionPane.showMessageDialog(null, "Field cannot be blank!");
+					}
+					else if (hcAdminRdBtn.isSelected() == false && ptnRdBtn.isSelected() == false) {
+						JOptionPane.showMessageDialog(null, "Please select roles!");
+					}
+					else if (hcAdminRdBtn.isSelected() && hcCmbBox.getSelectedIndex() == 0 ) {
+						errMsgSelectHC.setVisible(true);
+					}
+					else if (hcAdminRdBtn.isSelected() == true) {
+						Administrator adminAgr = new Administrator(username,password,email,fullName,staffID);
+						// assign the array list of Healthcare Center into a variable
+	                    HealthcareCenter selectHCAdmin = pcvsObj.getCentreListByIndex(centreOption-1);
+	                    // assign admin to selected healthcare center
+	                    selectHCAdmin.setAdminAgr(adminAgr);
+	                    // add to arraylist
+	                    pcvsObj.setAdminList(adminAgr);
+	                    // create dialog success
+						JOptionPane.showMessageDialog(null, "Administrator with " + staffID 
+														  + " registered in " + pcvsObj.getCentreListByIndex(centreOption - 1) 
+														  + " has successfully registered");
+						buttonGroup.clearSelection();
+						clearFieldsSignUp();
+						hcCmbBox.setSelectedIndex(0);
+					}
+					else if (ptnRdBtn.isSelected() == true && icpTField.getText().isEmpty()) {
+						JOptionPane.showMessageDialog(null, "ICPassport cannot be blank!");
+						errMsgSelectHC.setVisible(false);
+					}
+					else{
+						JOptionPane.showMessageDialog(null, "Patient Successfully registered!");
+						Patient patientAgr = new Patient(username,password, email, fullName, passport);
+	                    pcvsObj.setPatientList(patientAgr);
+	                    clearFieldsSignUp();
+	                    buttonGroup.clearSelection();
+	                    icpTField.setText("");
+					}
 				}
 			}
 		});
@@ -377,4 +386,10 @@ public class PCVSGUI {
 		return false;
 	}
 	
+	public void clearFieldsSignUp() {
+		usernameTField.setText("");
+		passwordTField.setText("");
+		fullNameTField.setText("");
+		emailTField.setText("");
+	}
 }

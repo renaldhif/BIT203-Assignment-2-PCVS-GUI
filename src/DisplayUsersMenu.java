@@ -13,67 +13,74 @@ import javax.swing.AbstractListModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.ListSelectionModel;
 import java.util.ArrayList;
+import javax.swing.SwingConstants;
+import java.awt.Font;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.ScrollPaneConstants;
 
 public class DisplayUsersMenu {
 
+	PCVS pcvsObj;
 	JFrame displayUsersFrame;
-	private JTable table;
-	PCVS pcvsObj = new PCVS();
-	ArrayList listAdminCl = (ArrayList)pcvsObj.getAdminList().clone();
-
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					DisplayUsersMenu window = new DisplayUsersMenu();
-//					window.DisplayUsersFrame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
-
+	//private JTable table;
+	private String username;
+	private HealthcareCenter HCAdmin;
+	private JTable adminTable;
+	private JTable patientTable;
+	
 	/**
 	 * Create the application.
 	 */
-	public DisplayUsersMenu() {
-		initialize();
+	public DisplayUsersMenu(String hcAdminUsername, HealthcareCenter inHCAdmin, PCVS newPCVS) {
+		username = hcAdminUsername;
+		HCAdmin = inHCAdmin;
+		pcvsObj = newPCVS;
+		initialize(newPCVS);
 	}
 
+	public void setPCVSObjClone(PCVS newPCVS) {
+		pcvsObj = newPCVS;
+	}
+
+	public void setUNameHCAdmin(String newUNameHCAdmin) {
+		username = newUNameHCAdmin;
+	}
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize(PCVS newPCVS) {
 		displayUsersFrame = new JFrame();
 		displayUsersFrame.setIconImage(Toolkit.getDefaultToolkit().getImage("img/pcvslogo.png"));
 		displayUsersFrame.setTitle("PCVS System");
-		displayUsersFrame.setBounds(100, 100, 800, 600);
+		displayUsersFrame.setBounds(100, 100, 1000, 600);
 		displayUsersFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		displayUsersFrame.getContentPane().setLayout(null);
 		
 		JLayeredPane layeredPane = new JLayeredPane();
-		layeredPane.setBounds(0, 0, 800, 600);
+		layeredPane.setBounds(0, 0, 1000, 600);
 		displayUsersFrame.getContentPane().add(layeredPane);
 		
 		JLabel dispUsersPicLbl = new JLabel("");
 		dispUsersPicLbl.setIcon(new ImageIcon("img/allUsers.png"));
-		dispUsersPicLbl.setBounds(0, 0, 360, 561);
+		dispUsersPicLbl.setBounds(0, 0, 360, 565);
 		layeredPane.add(dispUsersPicLbl);
 		
 		JLabel bgWhiteLbl = new JLabel("");
-		bgWhiteLbl.setIcon(new ImageIcon("img/bgWhite.png"));
-		bgWhiteLbl.setBounds(360, 0, 424, 561);
+		layeredPane.setLayer(bgWhiteLbl, 0);
+		bgWhiteLbl.setIcon(new ImageIcon("img/bgWhite1000.png"));
+		bgWhiteLbl.setBounds(360, 0, 650, 561);
 		layeredPane.add(bgWhiteLbl);
 		
 		JLabel backLbl = new JLabel("");
 		backLbl.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mousePressed(MouseEvent e) {
-				AdminMenu adminMenu = new AdminMenu();
+			public void mouseClicked(MouseEvent e) {
+				AdminMenu adminMenu = new AdminMenu(username, pcvsObj.getAdminInHC(username));
+				adminMenu.setPCVSObjClone(pcvsObj);
+				adminMenu.setHCAdmin(pcvsObj.getAdminInHC(username));
 				adminMenu.adminMenuFrame.setVisible(true);
 				displayUsersFrame.dispose();
 			}
@@ -84,60 +91,90 @@ public class DisplayUsersMenu {
 		layeredPane.add(backLbl);
 		
 		JLabel adminLbl = new JLabel("Administrator");
-		adminLbl.setBounds(370, 11, 115, 25);
+		adminLbl.setFont(new Font("Dialog", Font.BOLD, 14));
+		adminLbl.setHorizontalAlignment(SwingConstants.LEFT);
+		layeredPane.setLayer(adminLbl, 1);
+		adminLbl.setBounds(370, 47, 115, 25);
 		layeredPane.add(adminLbl);
 		
-		table = new JTable();
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		// re:
-		DefaultTableModel dtm = new DefaultTableModel();
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"Full Name", "Username", "Email", "Staff ID", "Healthcare"},
-			},
-			new String[] {
-				"Full Name", "Username", "Email", "Staff ID", "Healthcare"
-			}
-		) {
-			Class[] columnTypes = new Class[] {
-				String.class, String.class, String.class, String.class, String.class
-			};
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-		});
-		table.getColumnModel().getColumn(0).setPreferredWidth(103);
-		table.getColumnModel().getColumn(4).setPreferredWidth(148);
+		JLabel titleLbl = new JLabel("Display All Users");
+		titleLbl.setHorizontalAlignment(SwingConstants.CENTER);
+		titleLbl.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
+		layeredPane.setLayer(titleLbl, 1);
+		titleLbl.setBounds(570, 11, 193, 25);
+		layeredPane.add(titleLbl);
 		
+		JLabel patientLbl = new JLabel("Patient");
+		layeredPane.setLayer(patientLbl, 1);
+		patientLbl.setHorizontalAlignment(SwingConstants.LEFT);
+		patientLbl.setFont(new Font("Dialog", Font.BOLD, 14));
+		patientLbl.setBounds(370, 304, 115, 25);
+		layeredPane.add(patientLbl);
 		
-		for (int i = 0; i < listAdminCl.size(); i++) {
-			dtm.setRowCount(i+1);
-			Administrator dataAdmin = (Administrator) listAdminCl.get(i);
-			Object[] rowDataAdmin = 
-				{
-					dataAdmin.getFullName(),
-					dataAdmin.getUsername(),
-					dataAdmin.getEmail(),
-					dataAdmin.getStaffID(),
-					getAdminInHC()
-				};
-			dtm.addRow(rowDataAdmin);
+		// admin table
+		adminTable = new JTable();
+		adminTable.setFont(new Font("Malgun Gothic", Font.PLAIN, 12));
+		layeredPane.setLayer(adminTable, 2);
+		// create DefaultTableModel
+		DefaultTableModel dtmAdmin = new DefaultTableModel(0, 0);		
+		// Column Header
+		String[] colHeaderAdmin = new String[] {"Username", "Full name", "Email", "Staff ID"};
+		dtmAdmin.setColumnIdentifiers(colHeaderAdmin);
+		
+		for (int i = 0; i < pcvsObj.getAdminList().size(); i++) {
+			dtmAdmin.addRow(new Object[] {
+					pcvsObj.getAdminList().get(i).getUsername(),
+					pcvsObj.getAdminList().get(i).getFullName(),
+					pcvsObj.getAdminList().get(i).getEmail(),
+					pcvsObj.getAdminList().get(i).getStaffID(),
+			});
 		}
-		layeredPane.setLayer(table, 1);
-		table.setBounds(370, 47, 401, 149);
-		layeredPane.add(table);
-	}
-	
-	public String getAdminInHC(){
-		String adminHC = "";
-		for (int i = 0; i < pcvsObj.getCentreList().size(); i++){
-            HealthcareCenter dataHC = pcvsObj.getCentreListByIndex(i);
 
-            for (int j = 0; j < dataHC.getAdminAgr().size(); j++){
-       	 		adminHC = dataHC.getCentreName();
-            }
-        }
+		adminTable.setModel(dtmAdmin);
+		adminTable.getColumnModel().getColumn(0).setPreferredWidth(70);
+		adminTable.getColumnModel().getColumn(1).setPreferredWidth(90);
+		adminTable.getColumnModel().getColumn(2).setPreferredWidth(150);
+		adminTable.getColumnModel().getColumn(3).setPreferredWidth(40);
+		
+		JScrollPane scrollAdminTable = new JScrollPane();
+		layeredPane.setLayer(scrollAdminTable, 3);
+		scrollAdminTable.setViewportView(adminTable);
+		scrollAdminTable.setBounds(372, 83, 600, 200);
+		layeredPane.add(scrollAdminTable);
+		
+		JScrollPane scrollPatientTable = new JScrollPane();
+		layeredPane.setLayer(scrollPatientTable, 3);
+		scrollPatientTable.setBounds(370, 340, 600, 200);
+		layeredPane.add(scrollPatientTable);
+		
+		// patient table
+		patientTable = new JTable();
+		patientTable.setFont(new Font("Malgun Gothic", Font.PLAIN, 12));
+		scrollPatientTable.setViewportView(patientTable);
+		layeredPane.setLayer(patientTable, 2);
+		
+		// create DefaultTableModel
+		DefaultTableModel dtmPatient = new DefaultTableModel(0, 0);		
+		// Column Header
+		String[] colHeaderPatient = new String[] {"Username", "Full name", "Email", "IC Passport"};
+		dtmPatient.setColumnIdentifiers(colHeaderPatient);
+		// To prevent error due to the array list of patient is 0 
+		// if the patient have not registered yet
+		if (pcvsObj.getPatientList().size() > 0) {
+			for (int i = 0; i < pcvsObj.getPatientList().size(); i++) {
+				dtmPatient.addRow(new Object[] {
+						pcvsObj.getPatientList().get(i).getUsername(),
+						pcvsObj.getPatientList().get(i).getFullName(),
+						pcvsObj.getPatientList().get(i).getEmail(),
+						pcvsObj.getPatientList().get(i).getICPassport(),
+				});
+			}
+		}
 
-		return adminHC;
+		patientTable.setModel(dtmPatient);
+		patientTable.getColumnModel().getColumn(0).setPreferredWidth(70);
+		patientTable.getColumnModel().getColumn(1).setPreferredWidth(90);
+		patientTable.getColumnModel().getColumn(2).setPreferredWidth(150);
+		patientTable.getColumnModel().getColumn(3).setPreferredWidth(40);
 	}
 }

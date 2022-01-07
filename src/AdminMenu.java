@@ -14,32 +14,33 @@ import javax.swing.ImageIcon;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Color;
+import javax.swing.JTextArea;
 
 public class AdminMenu {
-
+	private PCVS pcvsObj;
 	JFrame adminMenuFrame;
-
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					AdminMenu window = new AdminMenu();
-//					window.adminMenuFrame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
+	private String username;
+	private HealthcareCenter HCAdmin;
 
 	/**
 	 * Create the application.
 	 */
-	public AdminMenu() {
+	public AdminMenu(String hcAdminUsername, HealthcareCenter inHCAdmin) {
+		username = hcAdminUsername;
+		HCAdmin = inHCAdmin;
 		initialize();
+	}
+	
+	public void setPCVSObjClone(PCVS newPCVS) {
+		pcvsObj = newPCVS;
+	} 
+	
+	public void setHCAdmin(HealthcareCenter newHCAdmin) {
+		HCAdmin = newHCAdmin;
+	}
+	
+	public void setUsernameAdmin(String newUsernameAdmin) {
+		username  = newUsernameAdmin;
 	}
 
 	/**
@@ -57,23 +58,32 @@ public class AdminMenu {
 		layeredPane.setBounds(0, 0, 800, 600);
 		adminMenuFrame.getContentPane().add(layeredPane);
 		
-		JLabel greetingLabel = new JLabel("Welcome Admin");
-		greetingLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		JLabel greetingLabel = new JLabel("Welcome Admin, " + username);
+		greetingLabel.setVerticalAlignment(SwingConstants.BOTTOM);
+		greetingLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		greetingLabel.setFont(new Font("Malgun Gothic", Font.BOLD, 18));
-		greetingLabel.setBounds(495, 11, 174, 46);
+		greetingLabel.setBounds(382, 39, 396, 25);
 		layeredPane.add(greetingLabel);
 		
-		JLabel hcAdmin = new JLabel("You're registered at: ");
-		hcAdmin.setHorizontalAlignment(SwingConstants.CENTER);
-		hcAdmin.setFont(new Font("Malgun Gothic", Font.BOLD, 15));
-		hcAdmin.setBounds(369, 68, 187, 46);
-		layeredPane.add(hcAdmin);
+		JTextArea adminHCTArea = new JTextArea();
+		adminHCTArea.setFont(new Font("Malgun Gothic", Font.BOLD, 13));
+		adminHCTArea.setEditable(false);
+		adminHCTArea.setForeground(new Color(0, 204, 204));
+		layeredPane.setLayer(adminHCTArea, 1);
+		adminHCTArea.setBounds(382, 68, 396, 70);
+		adminHCTArea.setText("Healthcare Center: " + 
+								HCAdmin.getCentreName() + 
+								", " + HCAdmin.getAddress());
+		layeredPane.add(adminHCTArea);
 		
 		JButton inputVacBatchBtn = new JButton("Input for New Vaccine Batch");
+		layeredPane.setLayer(inputVacBatchBtn, 1);
 		inputVacBatchBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				InputVaccine inputVaccineMenu = new InputVaccine();
+				InputVaccine inputVaccineMenu = new InputVaccine(username, HCAdmin);
+				inputVaccineMenu.setPCVSObjClone(pcvsObj);
+				inputVaccineMenu.setUNameHCAdmin(username);
 				inputVaccineMenu.inputVaccineFrame.setVisible(true);
 				adminMenuFrame.dispose();
 			}
@@ -83,32 +93,39 @@ public class AdminMenu {
 		layeredPane.add(inputVacBatchBtn);
 		
 		JButton viewVacBatchBtn = new JButton("View Vaccine Batch Information");
+		layeredPane.setLayer(viewVacBatchBtn, 1);
 		viewVacBatchBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				ViewVaccineBatchMenu viewVaccineBatchMenu = new ViewVaccineBatchMenu();
+				ViewVaccineBatchMenu viewVaccineBatchMenu = new ViewVaccineBatchMenu(username, HCAdmin);
+				viewVaccineBatchMenu.setPCVSObjClone(pcvsObj);
+				viewVaccineBatchMenu.setUNameHCAdmin(username);
 				viewVaccineBatchMenu.viewVaccineBatchFrame.setVisible(true);
 				adminMenuFrame.dispose();
 			}
 		});
 		viewVacBatchBtn.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
-		viewVacBatchBtn.setBounds(440, 250, 300, 46);
+		viewVacBatchBtn.setBounds(440, 230, 300, 46);
 		layeredPane.add(viewVacBatchBtn);
 		
 		JButton dispUsersBtn = new JButton("Display All Users");
+		layeredPane.setLayer(dispUsersBtn, 1);
 		dispUsersBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				DisplayUsersMenu displayUsersMenu = new DisplayUsersMenu();
+				DisplayUsersMenu displayUsersMenu = new DisplayUsersMenu(username, HCAdmin, pcvsObj);
+				displayUsersMenu.setPCVSObjClone(pcvsObj);
+				displayUsersMenu.setUNameHCAdmin(username);
 				displayUsersMenu.displayUsersFrame.setVisible(true);
 				adminMenuFrame.dispose();
 			}
 		});
 		dispUsersBtn.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
-		dispUsersBtn.setBounds(440, 350, 300, 46);
+		dispUsersBtn.setBounds(440, 390, 300, 46);
 		layeredPane.add(dispUsersBtn);
 		
 		JButton signOutBtn = new JButton("Sign Out");
+		layeredPane.setLayer(signOutBtn, 1);
 		signOutBtn.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -118,16 +135,18 @@ public class AdminMenu {
 						   "Sign Out",
 			               JOptionPane.YES_NO_OPTION,
 			               JOptionPane.QUESTION_MESSAGE);
-		            if(result == JOptionPane.YES_OPTION){
-		            	SignInMenu signInMenu = new SignInMenu();
-		            	signInMenu.signInMenuFrame.setVisible(true);
-		            	adminMenuFrame.dispose();
-		            }
+				
+	            if(result == JOptionPane.YES_OPTION){
+	            	SignInMenu signInMenu = new SignInMenu();
+	            	signInMenu.setPCVSObjClone(pcvsObj);
+	            	signInMenu.signInMenuFrame.setVisible(true);
+	            	adminMenuFrame.dispose();
+	            }
 			}
 		});
 		signOutBtn.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
 		signOutBtn.setBackground(new Color(237,94,104));
-		signOutBtn.setBounds(440, 450, 300, 46);
+		signOutBtn.setBounds(440, 470, 300, 46);
 		layeredPane.add(signOutBtn);
 		
 		JLabel adminPicLbl = new JLabel("");
@@ -139,6 +158,12 @@ public class AdminMenu {
 		whiteBgLbl.setIcon(new ImageIcon("img/bgWhite.png"));
 		whiteBgLbl.setBounds(360, 0, 430, 560);
 		layeredPane.add(whiteBgLbl);
+		
+		JButton confirmationBtn = new JButton("Confirm Vaccination Appointment");
+		layeredPane.setLayer(confirmationBtn, 1);
+		confirmationBtn.setFont(new Font("Malgun Gothic", Font.BOLD, 14));
+		confirmationBtn.setBounds(440, 310, 300, 46);
+		layeredPane.add(confirmationBtn);
 	
 	}
 }

@@ -24,26 +24,11 @@ public class SignInMenu {
 
 	JFrame signInMenuFrame;
 	private PCVS pcvsObj;
+	private HealthcareCenter HCAdmin;
 	private JTextField usernameTField;
 	private JPasswordField passwordTField;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	String username, password;
-	
-	/**
-	 * Launch the application.
-	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					SignInMenu window = new SignInMenu();
-//					window.frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
 
 	/**
 	 * Create the application.
@@ -52,7 +37,7 @@ public class SignInMenu {
 		initialize();
 	}
 	
-	// copy constructor PCVS from PCVSGUI class to this class
+	// A Setter method to copy constructor PCVS from PCVSGUI class to this class
 	public void setPCVSObjClone(PCVS newPCVS) {
 		pcvsObj = newPCVS;
 	}
@@ -103,6 +88,7 @@ public class SignInMenu {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				PCVSGUI mainMenu = new PCVSGUI();
+				mainMenu.setPCVSObjClone(pcvsObj);
 				mainMenu.mainMenuFrame.setVisible(true);
 				signInMenuFrame.dispose();
 			}
@@ -143,6 +129,7 @@ public class SignInMenu {
 		layeredPane.add(userTypeLbl);
 		
 		JRadioButton hcAdminRdBtn = new JRadioButton("Healthcare Administrator");
+		
 		hcAdminRdBtn.setBackground(new Color(255, 255, 255));
 		layeredPane.setLayer(hcAdminRdBtn, 1);
 		hcAdminRdBtn.setFont(new Font("Malgun Gothic", Font.PLAIN, 13));
@@ -151,6 +138,7 @@ public class SignInMenu {
 		layeredPane.add(hcAdminRdBtn);
 		
 		JRadioButton ptnRdBtn = new JRadioButton("Patient");
+		
 		ptnRdBtn.setBackground(new Color(255, 255, 255));
 		layeredPane.setLayer(ptnRdBtn, 1);
 		ptnRdBtn.setFont(new Font("Malgun Gothic", Font.PLAIN, 13));
@@ -177,46 +165,54 @@ public class SignInMenu {
 				signInBtn.setBackground(new Color(65, 105, 225));
 			}
 			public void mouseClicked(MouseEvent e) {
+				//debug
+				JOptionPane.showMessageDialog(null, pcvsObj.getPatientList());
 				username = usernameTField.getText();
 				password = String.valueOf(passwordTField.getPassword());
-				// if patient, show patient menu
-				if (isFieldSignInEmpty() == true) {
-					JOptionPane.showMessageDialog(null, "Field cannot be blank!");
+				
+				if(hcAdminRdBtn.isSelected() && 
+					pcvsObj.validatesLoginForAdmin(username, password) == -1) {
+							JOptionPane.showMessageDialog(null,
+						    "Wrong username or password.",
+						    "No account matched!.",
+						    JOptionPane.ERROR_MESSAGE);
 				}
-				if ((isFieldSignInEmpty() == false && ptnRdBtn.isSelected() == false && hcAdminRdBtn.isSelected() == false)) {
-					JOptionPane.showMessageDialog(null, "Please select roles!");
+				else if(ptnRdBtn.isSelected() &&
+					pcvsObj.validatesLoginForPatient(username,password) == -1) {
+							JOptionPane.showMessageDialog(null,
+						    "Wrong username or password.",
+						    "No account matched!.",
+						    JOptionPane.ERROR_MESSAGE);
 				}
-				else if((isFieldSignInEmpty() == false && (ptnRdBtn.isSelected() == true) || (isFieldSignInEmpty() == false  && hcAdminRdBtn.isSelected() == true))) {
-					// If user selects the Healthcare Administrator Radiobutton, 
-					// then show the AdminMenu Frame
-					if(hcAdminRdBtn.isSelected()) {
-						//debug
-						JOptionPane.showMessageDialog(null, pcvsObj.getAdminList());
-						JOptionPane.showMessageDialog(null, pcvsObj.getAdminInHC(username));
-						JOptionPane.showMessageDialog(null, username + " - " + password);
-						
-						
-						if(pcvsObj.validatesLoginForAdmin(username, password) == -1) {
-							JOptionPane.showMessageDialog(null, "No Account Matched! Wrong username or password");
-							SignInMenu signInMenu = new SignInMenu();
-							signInMenu.signInMenuFrame.setVisible(true);
-							signInMenuFrame.dispose();
-						}
-						else {
-							AdminMenu adminMenu = new AdminMenu();
+				else {
+					if (isFieldSignInEmpty() == true) {
+						JOptionPane.showMessageDialog(null, "Field cannot be blank!");
+					}
+					if ((isFieldSignInEmpty() == false && ptnRdBtn.isSelected() == false && hcAdminRdBtn.isSelected() == false)) {
+						JOptionPane.showMessageDialog(null, "Please select roles!");
+					}
+					else if((isFieldSignInEmpty() == false && (ptnRdBtn.isSelected() == true) || (isFieldSignInEmpty() == false  && hcAdminRdBtn.isSelected() == true))) {
+						// If user selects the Healthcare Administrator Radiobutton, 
+						// then show the AdminMenu Frame
+						if(hcAdminRdBtn.isSelected()) {						
+							AdminMenu adminMenu = new AdminMenu(username, pcvsObj.getAdminInHC(username));
+							adminMenu.setPCVSObjClone(pcvsObj);
+							adminMenu.setHCAdmin(pcvsObj.getAdminInHC(username));
 							adminMenu.adminMenuFrame.setVisible(true);
 						}
-						
+						// Else if user selects the Patient Radiobutton, 
+						// then show the PatientMenu Frame
+						else if(ptnRdBtn.isSelected()) {
+							String fullname = pcvsObj.getPatientFN(username);
+							PatientMenu patientMenu = new PatientMenu(fullname);
+							patientMenu.setPCVSObjClone(pcvsObj);
+							patientMenu.setPtnUName(username);
+							patientMenu.patientMenuFrame.setVisible(true);
+						}
+						// then dispose current frame
+						signInMenuFrame.dispose();
 					}
-					// Else if user selects the Patient Radiobutton, 
-					// then show the PatientMenu Frame
-					else if(ptnRdBtn.isSelected()) {
-						PatientMenu patientMenu = new PatientMenu();
-						patientMenu.patientMenuFrame.setVisible(true);
-					}
-					// then dispose current frame
-					signInMenuFrame.dispose();
-				}
+				} // else
 			}
 		});
 	
